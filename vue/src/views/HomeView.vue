@@ -31,55 +31,5 @@
 </template>
 
 <script>
-import request from "../untils/request";
 
-export default {
-  name: 'HomeView',
-  data() {
-    return {
-      tableData: [],
-      total: 0,
-      params:{
-        pageNum:1,
-        pageSize:10,
-        name:'',
-        phone:''
-      }
-    }
-  },
-  created() {
-    this.load()
-  },
-  methods: {
-    load() {
-      /*      fetch("http://localhost:9090/user/list").then(res => res.json()).then(res =>{
-              console.log(res)
-              this.tableData = res
-            })*/
-      request.get('/user/page',{
-        params:this.params
-          }
-      ).then(res => {
-        if (res.code === '200') {
-          this.tableData = res.data.list
-          this.total = res.data.total
-        }
-      })
-    },
-    reset(){
-      this.params ={
-        pageNum:1,
-        pageSize:10,
-        name:'',
-        phone:''
-      }
-      this.load()
-    },
-    handleCurrentChange(pageNum){
-      //点击分页按钮触发分页
-      tih.params.pageNum =pageNum
-      this.load()
-    }
-  }
-}
 </script>
