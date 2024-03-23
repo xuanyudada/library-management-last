@@ -1,5 +1,7 @@
 package org.example.springboot.service;
 
+import com.github.pagehelper.PageInfo;
+import org.example.springboot.controller.request.BaseRequest;
 import org.example.springboot.controller.request.UserPageRequest;
 import org.example.springboot.entity.User;
 
@@ -9,7 +11,7 @@ public interface IUserService {
     List<User> list();
 
 
-    Object page(UserPageRequest userPageRequest);
+    PageInfo<User> page(BaseRequest baseRequest);
 
     void save(User user);
 

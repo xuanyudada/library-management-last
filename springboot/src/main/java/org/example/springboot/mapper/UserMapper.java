@@ -2,6 +2,7 @@ package org.example.springboot.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.example.springboot.controller.request.BaseRequest;
 import org.example.springboot.controller.request.UserPageRequest;
 import org.example.springboot.entity.User;
 
@@ -12,7 +13,7 @@ public interface UserMapper {
 
     List<User> list();
 
-    List<User> listByCondition(UserPageRequest userPageRequest);
+    List<User> listByCondition(BaseRequest baseRequest);
 
     void save(User user);
 
