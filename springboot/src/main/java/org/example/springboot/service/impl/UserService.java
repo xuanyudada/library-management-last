@@ -5,7 +5,6 @@ import cn.hutool.core.util.IdUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.example.springboot.controller.request.BaseRequest;
-import org.example.springboot.controller.request.UserPageRequest;
 import org.example.springboot.entity.User;
 import org.example.springboot.mapper.UserMapper;
 import org.example.springboot.service.IUserService;

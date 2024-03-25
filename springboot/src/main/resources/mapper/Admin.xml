@@ -22,7 +22,7 @@
         select * from admin
         <where>
             <if test="username != null and username !=''">
-                username like concat('%',#{name},'%')
+                username like concat('%',#{username},'%')
             </if>
             <if test="phone != null and phone !=''">
                 and phone like concat('%',#{phone},'%')
@@ -33,7 +33,12 @@
         </where>
         order by id desc
     </select>
+
     <select id="getById" resultType="org.example.springboot.entity.Admin">
         select * from admin where id = #{id}
+    </select>
+
+    <select id="getByUsernameAndPassword" resultType="org.example.springboot.entity.Admin">
+        select * from admin where username = #{username} and password = #{password}
     </select>
 </mapper>
