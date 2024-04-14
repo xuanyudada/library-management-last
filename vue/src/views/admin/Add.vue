@@ -5,7 +5,7 @@
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" placeholder="请输入姓名"></el-input>
       </el-form-item>
-      <el-form-item label="联系方式">
+      <el-form-item label="联系方式" prop="phone">
         <el-input v-model.number="form.phone" placeholder="请输入联系方式"></el-input>
       </el-form-item>
       <el-form-item label="邮箱">
@@ -26,7 +26,7 @@ export default {
   name: 'AddAdmin',
   data() {
     const checkPhone = (rule, value, callback) => {
-      if(!/^[1]][3,4,5,6,7,8,9][0-9]{9}$/.test(value)){
+      if(!/^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(value)){
         callback(new Error('请输入合法的手机号'));
       }
       callback()

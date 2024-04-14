@@ -1,35 +1,32 @@
 <template>
   <div>
-    <!--    搜索表单-->
-    <div style="margin-bottom: 20px">
-      <el-input style="width: 240px" placeholder="请输入名称" v-model="params.name"></el-input>
-      <el-input style="width: 240px; margin-left: 5px" placeholder="请输入联系方式" @key.enter  v-model="params.phone" ></el-input>
-      <el-button style="margin-left: 5px" type="primary"  @click="load"><i class="el-icon-search">搜索</i></el-button>
-      <el-button style="margin-left: 5px" type="warning"  @click="reset"><i class="el-icon-refresh">重置</i></el-button>
-    </div>
-
-
-    <el-table :data="tableData" stripe>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="age" label="年龄"></el-table-column>
-      <el-table-column prop="address" label="地址"></el-table-column>
-      <el-table-column prop="phone" label="联系方式"></el-table-column>
-      <el-table-column prop="sex" label="性别"></el-table-column>
-    </el-table>
-    <!-- 分页-->
-    <div style="margin-top: 20px">
-      <el-pagination
-          background
-          :current-page="params.pageNum"
-          :page-size="params.pageSize"
-          layout="prev, pager, next"
-          @current-change="handleCurrentChange"
-          :total="total">
-      </el-pagination>
-    </div>
+    <div class="item">用户名：{{admin.username}}</div>
+    <div class="item">手机号：{{admin.phone}}</div>
+    <div class="item">邮箱：{{admin.email}}</div>
   </div>
 </template>
 
 <script>
+import Cookies from 'js-cookie'
+import request from "@/untils/request";
 
+export default {
+  data() {
+    return{
+      admin:Cookies.get('admin')?JSON.parse(Cookies.get('admin')):{}
+    }
+  },
+  created() {
+/*    request.get("/admin/" + this.admin.id).then(res => {
+      this.admin = res.data
+    })*/
+  }
+}
 </script>
+
+<style>
+.item {
+  margin: 10px 0;
+  color: #666;
+}
+</style>

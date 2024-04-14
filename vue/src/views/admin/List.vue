@@ -17,7 +17,7 @@
       <el-table-column prop="createtime" label="创建时间"></el-table-column>
       <el-table-column prop="updatetime" label="更新时间"></el-table-column>
 
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="230">
         <template v-slot="scope">
           <el-button type="primary" @click="$router.push('/EditAdmin?id=' + scope.row.id)">编辑</el-button>
           <template>
@@ -28,6 +28,7 @@
             >
               <el-button type="danger" slot="reference">删除</el-button>
             </el-popconfirm>
+              <el-button style="margin-left:5px"  type="warning" @click="handleChangePass(scope.row)">修改密码</el-button>
           </template>
         </template>
       </el-table-column>
@@ -44,6 +45,17 @@
       </el-pagination>
     </div>
 
+    <el-dialog title="修改密码" :visible.sync="dialogFormVisible" width="30%">
+      <el-form :model="form" label-width="100px" ref="formRef" : rules="rules">
+        <el-form-item label="新密码" prop="newPass">
+          <el-input v-model="form.newPass" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="savePass = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -56,12 +68,20 @@ export default {
     return {
       tableData: [],
       total: 0,
+      form:{},
+      dialogFormVisible:false,
       params: {
         pageNum: 1,
         pageSize: 10,
         username: '',
         phone: '',
         email: '',
+      },
+      rules: {
+        newPass: [
+          {required: true, message: '请输入新密码', trigger: 'blur'},
+          {min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'}
+        ],
       }
     }
   },
@@ -69,6 +89,21 @@ export default {
     this.load()
   },
   methods: {
+    handleChangePass(row){
+      this.form = JSON.parse(JSON.stringify(row))
+      this.dialogFormVisible = true
+    },
+    savePass(){
+      this.$refs['formRef'].validate((valid) =>{
+        if (valid){
+          request.put('/admin/password').then(res =>{
+            if (res.code === '200'){
+              this.$notify.success("修改成功")
+            }
+          })
+        }
+      })
+    },
     load() {
       request.get('/admin/page', {
             params: this.params

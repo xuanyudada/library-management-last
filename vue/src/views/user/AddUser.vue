@@ -12,10 +12,10 @@
         <el-radio v-model="form.sex" label="男" 男></el-radio>
         <el-radio v-model="form.sex" label="女" 女></el-radio>
       </el-form-item>
-      <el-form-item label="联系方式">
+      <el-form-item label="联系方式" prop="phone">
         <el-input v-model.number="form.phone" placeholder="请输入联系方式"></el-input>
       </el-form-item>
-      <el-form-item label="地址">
+      <el-form-item label="地址" prop="address">
         <el-input v-model="form.address" placeholder="请输入地址"></el-input>
       </el-form-item>
     </el-form>
@@ -42,7 +42,7 @@ export default {
       callback()
     };
     const checkPhone = (rule, value, callback) => {
-      if(!/^[1]][3,4,5,6,7,8,9][0-9]{9}$/.test(value)){
+      if(!/^[1][3,4,5,6,7,8,9][0-9]{9}$/.test(value)){
         callback(new Error('请输入合法的手机号'));
       }
       callback()
@@ -57,7 +57,7 @@ export default {
           {validator: checkAge, trigger: 'blur'}
         ],
         phone: [
-          {validator:checkPhone,trigger:'blur'}
+          { validator:checkPhone,trigger:'blur'}
         ]
       }
     }

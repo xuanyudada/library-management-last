@@ -5,6 +5,13 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/assets/global.css'
 
+import Router from 'vue-router'
+const routerPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return routerPush.call(this, location).catch(error=> error)}
+
+
+
 Vue.config.productionTip = false
 Vue.use(ElementUI,{size:'small'});//medium small mini
 

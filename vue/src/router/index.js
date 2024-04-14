@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Layout from "@/views/Layout.vue";
+import Cookies from "js-cookie";
 
 Vue.use(VueRouter)
 
@@ -59,7 +60,10 @@ const routes = [
             }
         ]
     },
-
+    {
+        path:"*",
+        component:()=>import('@/views/404')
+    }
 
 ]
 
@@ -69,4 +73,11 @@ const router = new VueRouter({
     routes
 })
 
+router.beforeEach((to, from, next) => {
+    if (to.path === '/login') next()
+    const admin = Cookies.get("admin")
+    if (!admin && to.path !== '/login') return next("/login")
+    //访问/home的时候，并且cookie里存放数据，这个时候放行
+    next()
+})
 export default router
