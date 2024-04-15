@@ -20,7 +20,6 @@
       <el-table-column label="操作" width="230">
         <template v-slot="scope">
           <el-button type="primary" @click="$router.push('/EditAdmin?id=' + scope.row.id)">编辑</el-button>
-          <template>
             <el-popconfirm
                 style="margin-left: 5px"
                 title="确定删除这行数据吗？"
@@ -28,8 +27,7 @@
             >
               <el-button type="danger" slot="reference">删除</el-button>
             </el-popconfirm>
-              <el-button style="margin-left:5px"  type="warning" @click="handleChangePass(scope.row)">修改密码</el-button>
-          </template>
+          <el-button type="warning" style="margin-left: 5px" @click="handleChangePass">修改密码</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -45,15 +43,15 @@
       </el-pagination>
     </div>
 
-    <el-dialog title="修改密码" :visible.sync="dialogFormVisible" width="30%">
-      <el-form :model="form" label-width="100px" ref="formRef" : rules="rules">
+    <el-dialog title="修改密码" :visible.sync="dialogFormVisible">
+      <el-form :model="form" label-width="100px" ref="formRef" :rules="rules">
         <el-form-item label="新密码" prop="newPass">
-          <el-input v-model="form.newPass" autocomplete="off"></el-input>
+          <el-input v-model="form.newPass" autocomplete="off" show-password></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="savePass = false">确 定</el-button>
+        <el-button type="primary" @click="savePass">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -61,11 +59,13 @@
 
 <script>
 import request from "@/untils/request";
+import Cookies from "js-cookie";
 
 export default {
-  name: 'Admin',
+  name: 'AdminList',
   data() {
     return {
+      admin:Cookies.get('admin')?JSON.parse(Cookies.get('admin')):{},
       tableData: [],
       total: 0,
       form:{},
@@ -96,9 +96,16 @@ export default {
     savePass(){
       this.$refs['formRef'].validate((valid) =>{
         if (valid){
-          request.put('/admin/password').then(res =>{
+          request.put('/admin/password',this.form).then(res =>{
             if (res.code === '200'){
               this.$notify.success("修改成功")
+              if (this.form.id ===this.admin.id){ //当前修改的用户id等于当前登录的管理员id，那么修改成功红之后需要重新登录
+                Cookies.remove('admin')
+                this.$router.push('/login');
+              }
+            }
+            else {
+              this.$notify.error("修改失败")
             }
           })
         }
