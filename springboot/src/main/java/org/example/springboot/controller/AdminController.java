@@ -4,6 +4,7 @@ import org.example.springboot.common.Result;
 import org.example.springboot.controller.dto.LoginDTO;
 import org.example.springboot.controller.request.AdminPageRequest;
 import org.example.springboot.controller.request.LoginRequest;
+import org.example.springboot.controller.request.PasswordRequest;
 import org.example.springboot.entity.Admin;
 import org.example.springboot.service.IAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,12 @@ public class AdminController {
     public Result login(@RequestBody LoginRequest request) {
         LoginDTO login = adminService.login(request);
         return Result.success(login);
+    }
+
+    @PutMapping("/password")
+    public Result password(@RequestBody PasswordRequest request) {
+        adminService.changePass(request);
+        return Result.success();
     }
 
     @GetMapping("/{id}")

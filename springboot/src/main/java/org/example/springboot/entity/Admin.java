@@ -16,4 +16,5 @@ public class Admin {
     private Date createtime;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatetime;
+    private boolean status;
 }

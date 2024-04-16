@@ -16,18 +16,27 @@
       <el-table-column prop="email" label="邮箱"></el-table-column>
       <el-table-column prop="createtime" label="创建时间"></el-table-column>
       <el-table-column prop="updatetime" label="更新时间"></el-table-column>
-
+      <el-table-column label="状态" width="230">
+        <template v-slot="scope">
+          <el-switch
+              v-model="scope.row.status"
+              @change="changeStatus(scope.row)"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+          </el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" width="230">
         <template v-slot="scope">
           <el-button type="primary" @click="$router.push('/EditAdmin?id=' + scope.row.id)">编辑</el-button>
-            <el-popconfirm
-                style="margin-left: 5px"
-                title="确定删除这行数据吗？"
-                @confirm="del(scope.row.id)"
-            >
-              <el-button type="danger" slot="reference">删除</el-button>
-            </el-popconfirm>
-          <el-button type="warning" style="margin-left: 5px" @click="handleChangePass">修改密码</el-button>
+          <el-popconfirm
+              style="margin-left: 5px"
+              title="确定删除这行数据吗？"
+              @confirm="del(scope.row.id)"
+          >
+            <el-button type="danger" slot="reference">删除</el-button>
+          </el-popconfirm>
+          <el-button type="warning" style="margin-left: 5px" @click="handleChangePass(scope.row)">修改密码</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -65,11 +74,11 @@ export default {
   name: 'AdminList',
   data() {
     return {
-      admin:Cookies.get('admin')?JSON.parse(Cookies.get('admin')):{},
+      admin: Cookies.get('admin') ? JSON.parse(Cookies.get('admin')) : {},
       tableData: [],
       total: 0,
-      form:{},
-      dialogFormVisible:false,
+      form: {},
+      dialogFormVisible: false,
       params: {
         pageNum: 1,
         pageSize: 10,
@@ -89,22 +98,39 @@ export default {
     this.load()
   },
   methods: {
-    handleChangePass(row){
+    changeStatus(row){
+      if (this.admin.id ===row.id &&! row.status){
+        row.status = true
+        this.$notify.warning('您的操作不合法')
+        return
+      }
+      request.put('/admin/update', row).then(res => {
+        if (res.code === '200') {
+          this.$notify.success('操作成功')
+          this.load()
+        } else {
+          this.$notify.error(res.msg)
+        }
+      })
+    },
+    handleChangePass(row) {
       this.form = JSON.parse(JSON.stringify(row))
       this.dialogFormVisible = true
     },
-    savePass(){
-      this.$refs['formRef'].validate((valid) =>{
-        if (valid){
-          request.put('/admin/password',this.form).then(res =>{
-            if (res.code === '200'){
+    savePass() {
+      this.$refs['formRef'].validate((valid) => {
+        if (valid) {
+          request.put('/admin/password', this.form).then(res => {
+            if (res.code === '200') {
               this.$notify.success("修改成功")
-              if (this.form.id ===this.admin.id){ //当前修改的用户id等于当前登录的管理员id，那么修改成功红之后需要重新登录
+              if (this.form.id === this.admin.id) { //当前修改的用户id等于当前登录的管理员id，那么修改成功红之后需要重新登录
                 Cookies.remove('admin')
                 this.$router.push('/login');
+              } else {
+                this.load()
+                this.dialogFormVisible = false
               }
-            }
-            else {
+            } else {
               this.$notify.error("修改失败")
             }
           })

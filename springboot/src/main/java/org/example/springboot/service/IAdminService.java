@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import org.example.springboot.controller.dto.LoginDTO;
 import org.example.springboot.controller.request.BaseRequest;
 import org.example.springboot.controller.request.LoginRequest;
+import org.example.springboot.controller.request.PasswordRequest;
 import org.example.springboot.entity.Admin;
 
 import java.util.List;
@@ -23,4 +24,6 @@ public interface IAdminService {
     void deleteById(Integer id);
 
     LoginDTO login(LoginRequest request);
+
+    void changePass(PasswordRequest request);
 }
