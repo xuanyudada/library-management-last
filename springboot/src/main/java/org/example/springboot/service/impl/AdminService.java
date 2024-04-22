@@ -1,13 +1,10 @@
 package org.example.springboot.service.impl;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
-import org.example.springboot.common.Result;
 import org.example.springboot.controller.dto.LoginDTO;
 import org.example.springboot.controller.request.BaseRequest;
 import org.example.springboot.controller.request.LoginRequest;
@@ -19,8 +16,11 @@ import org.example.springboot.service.IAdminService;
 import org.example.springboot.untils.TokenUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Date;
 import java.util.List;
 
@@ -47,14 +47,19 @@ public class AdminService implements IAdminService {
 
     @Override
     public void save(Admin obj) {
+        //默认密码123
         if (StrUtil.isBlankIfStr(obj.getPassword())) {
             obj.setPassword(DEFAULT_PASS);
         }
         obj.setPassword(securePass(obj.getPassword()));//设置加密，加盐
         Date date = new Date();
         //当做卡号处理
-
-        adminMapper.save(obj);
+        try {
+            adminMapper.save(obj);
+        } catch (DuplicateKeyException e) {
+            log.error("数据插入失败,username:{}",obj.getUsername());
+            throw new  ServiceException("用户名重复");
+        }
     }
 
     @Override
@@ -75,11 +80,22 @@ public class AdminService implements IAdminService {
 
     @Override
     public LoginDTO login(LoginRequest request) {
-        request.setPassword(securePass(request.getPassword()));
-        Admin admin = adminMapper.getByUsernameAndPassword(request.getUsername(),request.getPassword());
+        Admin admin = null;
+        try {
+            admin = adminMapper.getByUsername(request.getUsername());
+        } catch (Exception e) {
+            log.error("根据用户名查询{} 查询出错", request.getUsername());
+            throw new ServiceException("用户名错误");
+        }
         if (admin == null) {
             throw new ServiceException("用户名或密码错误");
         }
+        //判断密码是否合法
+        String securePass = securePass(request.getPassword());
+        if (!securePass.equals(admin.getPassword())) {
+            throw new ServiceException("用户名或密码错误");
+        }
+
         if (!admin.isStatus()) {
             throw new ServiceException("当前用户处于禁用状态，请联系管理员");
         }
@@ -96,7 +112,7 @@ public class AdminService implements IAdminService {
         //注意 对新的密码加密
         request.setNewPass(securePass(request.getNewPass()));
         int count = adminMapper.updatePassword(request);
-        if (count <=0){
+        if (count <= 0) {
             throw new ServiceException("修改密码失败");
         }
     }

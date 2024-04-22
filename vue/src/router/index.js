@@ -57,7 +57,11 @@ const routes = [
                 path: 'editAdmin',
                 name: 'EditAdmin',
                 component: () => import('@/views/admin/Edit.vue'),
-            }
+            },
+            // === Category ===
+            {path: 'categoryList',name: 'CategoryList',component: () => import('@/views/category/List.vue'),},
+            {path: 'addCategory',name: 'AddCategory',component: () => import('@/views/category/Add.vue'),},
+            {path: 'editCategory',name: 'EditCategory',component: () => import('@/views/category/Edit.vue'),},
         ]
     },
     {
