@@ -2,8 +2,24 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="org.example.springboot.mapper.CategoryMapper">
+
+    <resultMap id="categoryMap" type="org.example.springboot.entity.Category">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="remark" property="remark" />
+        <result column="pid" property="pid" />
+        <result column="createtime" property="createtime" />
+        <result column="uptatetime" property="uptatetime" />
+        <collection property="children" column="id" ofType="org.example.springboot.entity.Category" select="selectByPid" />
+    </resultMap>
+
+    <select id="selectByPid" resultType="org.example.springboot.entity.Category">
+        select *  from category where pid = #{id}
+        order by id desc
+    </select>
+
     <insert id="save">
-        insert into category(name,remark) values (#{name},#{remark})
+        insert into category(name,remark,pid) values (#{name},#{remark},#{pid})
     </insert>
 
     <update id="updateById">
@@ -19,14 +35,18 @@
         select * from category order by id desc
     </select>
 
-    <select id="listByCondition" resultType="org.example.springboot.entity.Category">
-        select * from category
+    <select id="listByCondition" resultMap="categoryMap">
+        select c1.* from category c1
+        left join category c2
+        on c1.id =c2.pid
         <where>
-            <if test="name != null and name !=''">
-                name like concat('%',#{name},'%')
-            </if>
+            isnull(c1.pid)
+                  <if test="name !=null and name !=''">
+                      and (c1.name like concat('%',#{name},'%') or c2.name like concat('%',#{name},'%'))
+                  </if>
         </where>
-        order by id desc
+            group by c1.id
+            order by c1.id desc
     </select>
 
     <select id="getById" resultType="org.example.springboot.entity.Category">
