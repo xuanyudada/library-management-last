@@ -19,4 +19,5 @@ public class Book  extends BaseEntity implements Serializable {
     private String bookNo;
     private String cover;
     private List<String> categories;
+    private Integer score;
 }

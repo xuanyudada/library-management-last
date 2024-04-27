@@ -5,12 +5,12 @@
 
 
     <insert id="save">
-        insert into book(name,description,publish_date,author,publisher,category,book_no,cover)
-        values (#{name},#{description},#{publishDate},#{author},#{publisher},#{category},#{bookNo},#{cover})
+        insert into book(name,description,publish_date,author,publisher,category,book_no,cover,score)
+        values (#{name},#{description},#{publishDate},#{author},#{publisher},#{category},#{bookNo},#{cover},#{score})
     </insert>
 
     <update id="updateById">
-        update book set name = #{name},description = #{description},publish_date = #{publishDate},author = #{author},
+        update book set name = #{name},description = #{description},publish_date = #{publishDate},author = #{author},score= #{score},
         publisher = #{publisher},category = #{category},book_no = #{bookNo},cover = #{cover},cteatetime = #{cteatetime},updatetime = #{updatetime}
         where id= #{id}
     </update>

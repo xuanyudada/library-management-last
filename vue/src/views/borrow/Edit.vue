@@ -1,6 +1,6 @@
 <template>
   <div style="width: 80%">
-    <div style="margin-bottom: 30px">新增图书</div>
+    <div style="margin-bottom: 30px">编辑图书</div>
     <el-form :inline="true" :rules="rules" ref="ruleForm" :model="form" label-width="100px">
       <el-form-item label="名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入名称"></el-input>
@@ -24,17 +24,14 @@
         <el-input v-model.number="form.publisher" placeholder="请输入出版社"></el-input>
       </el-form-item>
       <el-form-item label="分类" prop="category">
-          <el-cascader
-              style="width: 220px"
-              :props="{ value:'name',label:'name'}"
-              v-model="form.categories"
-              :options="categories"></el-cascader>
+        <el-cascader
+            style="width: 220px"
+            :props="{ value:'name',label:'name'}"
+            v-model="form.categories"
+            :options="categories"></el-cascader>
       </el-form-item>
       <el-form-item label="标准码" prop="bookNo">
         <el-input v-model.number="form.bookNo" placeholder="请输入标准码"></el-input>
-      </el-form-item>
-      <el-form-item label="借书积分" prop="cover">
-        <el-input-number v-model="form.score" :min="10" :max="30" label="所需积分"></el-input-number>
       </el-form-item>
       <el-form-item label="封面" prop="cover">
         <el-input v-model.number="form.cover" placeholder="请输入封面"></el-input>
@@ -45,51 +42,49 @@
       <el-button type="primary" @click="save" size="medium">提交</el-button>
     </div>
   </div>
+
 </template>
 
 <script>
 import request from "@/untils/request";
 
 export default {
-  name: 'AddBook',
+  name: 'EditBook',
   data() {
     return {
-      form: {score:10},
+      form: {},
       categories:{},
       rules: {
         name: [
-          { required: true, message: '请输入图书名称', trigger: 'blur'},
-        ],
-        bookNo: [
-          { required: true, message: '请输入图书的标准码', trigger: 'blur'},
-        ],
-        score: [
-          { required: true, message: '请输入借书积分', trigger: 'blur'},
+          {required: true, message: '请输入图书名称', trigger: 'blur'},
         ],
       }
     }
   },
-  created(){
+  created() {
     request.get('/category/tree').then(res => {
       this.categories = res.data
+    })
+
+    const id = this.$route.query.id
+    request.get("/book/" + id).then(res => {
+      this.form = res.data
+      if (this.form.category){
+        this.form.categories = this.form.category.split(' > ')
+      }
     })
   },
   methods: {
     save() {
-      this.$refs['ruleForm'].validate((valid) => {
-        if (valid) {
-          request.post('/book/save', this.form).then(res => {
-            if (res.code === '200') {
-              this.$notify.success('新增成功')
-              this.$refs['ruleForm'].resetFields()
-            } else {
-              this.$notify.error(res.msg)
-            }
-          })
+      request.put('/book/update', this.form).then(res => {
+        if (res.code === '200') {
+          this.$notify.success('更新成功')
+          this.$router.push("/bookList")
+        } else {
+          this.$notify.error(res.msg)
         }
       })
     }
-  },
-
+  }
 }
 </script>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.example.springboot.mapper.BorrowMapper">
+
+
+    <insert id="save">
+        INSERT INTO borrow (book_name, book_no, user_id, user_name, user_phone,score)
+        VALUES (#{bookName}, #{bookNo}, #{userId}, #{userName}, #{userPhone}, #{score})
+    </insert>
+
+    <update id="updateById">
+        update borrow set book_name = #{bookName},book_no = #{bookNo},user_id = #{userId},user_name = #{userName},
+        user_phone = #{userPhone},updatetime = #{updateTime},score = #{score}
+        where id= #{id}
+    </update>
+
+
+    <delete id="deleteById">
+        delete from borrow where id =#{id}
+    </delete>
+
+    <select id="list" resultType="org.example.springboot.entity.Borrow">
+        select * from borrow order by id desc
+    </select>
+
+    <select id="listByCondition" resultType="org.example.springboot.entity.Borrow">
+        select * from borrow
+        <where>
+            <if test="bookName != null and name !=''">
+                book_name like concat('%',#{bookName},'%')
+            </if>
+            <if test="bookNo != null and bookNo !=''">
+                and book_no like concat('%',#{bookNo},'%')
+            </if>
+            <if test="userName != null and userName !=''">
+                and user_name like concat('%',#{userName},'%')
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="getById" resultType="org.example.springboot.entity.Borrow">
+        select * from borrow where id = #{id}
+    </select>
+</mapper>
