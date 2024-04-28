@@ -16,18 +16,19 @@
     <div style="width: 500px; height: 400px; background-color: white; border-radius: 10px;
     margin:150px auto ;padding: 50px">
       <div style="margin:30px;text-align: center;font-size: 30px;color: dodgerblue">登录</div>
-    <el-form :model="admin" :rules="rules" ref="loginForm">
-      <el-form-item prop="username">
-        <el-input placeholder="请输入账号" prefix-icon="el-icon-user" size="medium" v-model="admin.username"></el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input placeholder="请输入密码" show-password  prefix-icon="el-icon-lock" size="medium" v-model="admin.password"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button style="width: 100%" size="medium" type="primary"  @click="login">登录</el-button>
-      </el-form-item>
-    </el-form>
-  </div>
+      <el-form :model="admin" :rules="rules" ref="loginForm">
+        <el-form-item>
+          <el-input placeholder="请输入账号" prefix-icon="el-icon-user" size="medium" v-model="admin.username" @keyup.enter.native="login"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-input placeholder="请输入密码" show-password  prefix-icon="el-icon-lock" size="medium" v-model="admin.password" @keyup.enter.native="login"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button style="width: 100%" size="medium" type="primary" @click="login">登录</el-button>
+        </el-form-item>
+      </el-form>
+
+    </div>
 </div>
 </template>
 
@@ -57,15 +58,22 @@ export default {
     login(){
       this.$refs['loginForm'].validate((valid) =>{
         if (valid){
-          request.post('/admin/login',this.admin).then(res =>{
+          request.post('/admin/login', this.admin).then(res =>{
             if (res.code === '200'){
-              this.loginAdmin = res.data  //滑块组件就出现了
-            }else {
-              this.$notify.error(res.mes)
+              this.loginAdmin = res.data;
+            } else {
+              this.$notify.error(res.mes);
+              // 在登录失败时清空 loginAdmin 对象
+              this.loginAdmin = {};
             }
-          })
+          }).catch(err => {
+            console.error('登录请求出错：', err);
+            this.$notify.error('登录请求出错，请稍后重试');
+            // 在登录请求出错时清空 loginAdmin 对象
+            this.loginAdmin = {};
+          });
         }
-      })
+      });
     },
     onSuccess() {   //滑块验证后触发
       Cookies.set('admin',JSON.stringify(this.loginAdmin))

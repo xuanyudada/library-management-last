@@ -2,39 +2,37 @@
   <div style="width: 80%">
     <div style="margin-bottom: 30px">编辑图书</div>
     <el-form :inline="true" :rules="rules" ref="ruleForm" :model="form" label-width="100px">
-      <el-form-item label="名称" prop="name">
-        <el-input v-model="form.name" placeholder="请输入名称"></el-input>
+      <el-form-item label="图书标准码" prop="bookNo">
+        <el-select v-model="form.bookNo" clearable filterable placeholder="请选择" @change="selBook" >
+          <el-option
+              v-for="item in books"
+              :key="item.id"
+              :label="item.bookNo"
+              :value="item.bookNo">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="描述" prop="description">
-        <el-input style="width: 400px" type="textarea" v-model.number="form.description" placeholder="请输入描述"></el-input>
+      <el-form-item label="图书名称" prop="bookName">
+        <el-input v-model="form.bookName" disabled placeholder="请输入名称"></el-input>
       </el-form-item>
-      <el-form-item label="出版日期" prop="publishDate">
-        <el-date-picker
-            style="width: 85%"
-            v-model="form.publishDate"
-            type="date"
-            value-format="yyyy-MM-dd"
-            placeholder="选择出版日期">
-        </el-date-picker>
+      <el-form-item label="所需积分" prop="score">
+        <el-input v-model="form.score" disabled ></el-input>
       </el-form-item>
-      <el-form-item label="作者" prop="author">
-        <el-input v-model.number="form.author" placeholder="请输入作者"></el-input>
+      <el-form-item label="会员码" prop="userNo">
+        <el-select v-model="form.userNo" filterable placeholder="请选择" @change="selUser">
+          <el-option
+              v-for="item in users"
+              :key="item.id"
+              :label="item.username"
+              :value="item.username">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="出版社" prop="publisher">
-        <el-input v-model.number="form.publisher" placeholder="请输入出版社"></el-input>
+      <el-form-item label="用户名称" prop="userName">
+        <el-input disabled v-model="form.userName" ></el-input>
       </el-form-item>
-      <el-form-item label="分类" prop="category">
-        <el-cascader
-            style="width: 220px"
-            :props="{ value:'name',label:'name'}"
-            v-model="form.categories"
-            :options="categories"></el-cascader>
-      </el-form-item>
-      <el-form-item label="标准码" prop="bookNo">
-        <el-input v-model.number="form.bookNo" placeholder="请输入标准码"></el-input>
-      </el-form-item>
-      <el-form-item label="封面" prop="cover">
-        <el-input v-model.number="form.cover" placeholder="请输入封面"></el-input>
+      <el-form-item label="用户联系方式" prop="userPhone">
+        <el-input disabled v-model="form.userPhone" ></el-input>
       </el-form-item>
     </el-form>
 
@@ -53,30 +51,35 @@ export default {
   data() {
     return {
       form: {},
+      books:[],
+      users:[],
       categories:{},
       rules: {
-        name: [
-          {required: true, message: '请输入图书名称', trigger: 'blur'},
+        userNo: [
+          { required: true, message: '请输入会员码', trigger: 'blur'},
+        ],
+        bookNo: [
+          { required: true, message: '请输入图书的标准码', trigger: 'blur'},
         ],
       }
     }
   },
   created() {
-    request.get('/category/tree').then(res => {
-      this.categories = res.data
+    request.get('/book/list').then(res => {
+      this.books = res.data
     })
 
+    request.get('/user/list').then(res => {
+      this.users = res.data
+    })
     const id = this.$route.query.id
     request.get("/book/" + id).then(res => {
       this.form = res.data
-      if (this.form.category){
-        this.form.categories = this.form.category.split(' > ')
-      }
     })
   },
   methods: {
     save() {
-      request.put('/book/update', this.form).then(res => {
+      request.put('/borrow/update', this.form).then(res => {
         if (res.code === '200') {
           this.$notify.success('更新成功')
           this.$router.push("/bookList")
@@ -84,7 +87,17 @@ export default {
           this.$notify.error(res.msg)
         }
       })
-    }
+    },
+    selBook(){
+      const book = this.books.find(v => v.bookNo === this.form.bookNo)
+      this.form.bookName = book.name
+      this.form.score = book.score
+    },
+    selUser(){
+      const user = this.users.find(v => v.username === this.form.userNo); // 修正变量名错误
+      this.form.userName = user.name; // 更新用户名称字段
+      this.form.userPhone = user.phone; // 更新用户联系方式字段
+    },
   }
 }
 </script>

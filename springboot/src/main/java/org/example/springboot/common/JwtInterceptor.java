@@ -38,7 +38,7 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         // 获取 token 中的adminId
         String adminId;
-        Admin admin;
+        Admin admin = null;
         try {
             adminId = JWT.decode(token).getAudience().get(0);
             // 根据token中的userid查询数据库
@@ -60,5 +60,6 @@ public class JwtInterceptor implements HandlerInterceptor {
             throw new ServiceException(ERROR_CODE_401, "token验证失败，请重新登录");
         }
         return true;
+
     }
 }

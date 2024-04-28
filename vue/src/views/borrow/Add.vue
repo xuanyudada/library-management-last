@@ -2,7 +2,7 @@
   <div style="width: 80%">
     <div style="margin-bottom: 30px">新增借书记录</div>
     <el-form :inline="true" :rules="rules" ref="ruleForm" :model="form" label-width="100px">
-      <el-form-item label="图书标准码" prop="description">
+      <el-form-item label="图书标准码" prop="bookNo">
         <el-select v-model="form.bookNo" clearable filterable placeholder="请选择" @change="selBook" >
           <el-option
               v-for="item in books"
@@ -12,27 +12,27 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="图书名称" prop="name">
+      <el-form-item label="图书名称" prop="bookName">
         <el-input v-model="form.bookName" disabled placeholder="请输入名称"></el-input>
       </el-form-item>
-      <el-form-item label="所需积分" prop="cover">
+      <el-form-item label="所需积分" prop="score">
         <el-input v-model="form.score" disabled ></el-input>
       </el-form-item>
-      <el-form-item label="用户ID" prop="userId">
-        <el-select v-model="form.userId" filterable placeholder="请选择">
+      <el-form-item label="会员码" prop="userNo">
+        <el-select v-model="form.userNo" filterable placeholder="请选择" @change="selUser">
           <el-option
               v-for="item in users"
               :key="item.id"
-              :label="item.name"
-              :value="item.id">
+              :label="item.username"
+              :value="item.username">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="用户名称" prop="userName">
-        <el-input v-model="form.userName" ></el-input>
+        <el-input disabled v-model="form.userName" ></el-input>
       </el-form-item>
       <el-form-item label="用户联系方式" prop="userPhone">
-        <el-input v-model="form.userPhone" ></el-input>
+        <el-input disabled v-model="form.userPhone" ></el-input>
       </el-form-item>
     </el-form>
 
@@ -53,14 +53,11 @@ export default {
       books:[],
       users:[],
       rules: {
-        name: [
-          { required: true, message: '请输入图书名称', trigger: 'blur'},
+        userNo: [
+          { required: true, message: '请输入会员码', trigger: 'blur'},
         ],
         bookNo: [
           { required: true, message: '请输入图书的标准码', trigger: 'blur'},
-        ],
-        score: [
-          { required: true, message: '请输入借书积分', trigger: 'blur'},
         ],
       }
     }
@@ -78,7 +75,7 @@ export default {
     save() {
       this.$refs['ruleForm'].validate((valid) => {
         if (valid) {
-          request.post('/book/save', this.form).then(res => {
+          request.post('/borrow/save', this.form).then(res => {
             if (res.code === '200') {
               this.$notify.success('新增成功')
               this.$refs['ruleForm'].resetFields()
@@ -93,7 +90,13 @@ export default {
       const book = this.books.find(v => v.bookNo === this.form.bookNo)
       this.form.bookName = book.name
       this.form.score = book.score
-    }
+    },
+    selUser(){
+      const user = this.users.find(v => v.username === this.form.userNo); // 修正变量名错误
+        this.form.userName = user.name; // 更新用户名称字段
+        this.form.userPhone = user.phone; // 更新用户联系方式字段
+    },
   }
 }
+
 </script>
