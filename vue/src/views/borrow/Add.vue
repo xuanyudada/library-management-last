@@ -18,6 +18,10 @@
       <el-form-item label="所需积分" prop="score">
         <el-input v-model="form.score" disabled ></el-input>
       </el-form-item>
+      <el-form-item label="图书数量" prop="nums">
+        <el-input v-model="form.nums" disabled ></el-input>
+      </el-form-item>
+      <br />
       <el-form-item label="会员码" prop="userNo">
         <el-select v-model="form.userNo" filterable placeholder="请选择" @change="selUser">
           <el-option
@@ -33,6 +37,9 @@
       </el-form-item>
       <el-form-item label="用户联系方式" prop="userPhone">
         <el-input disabled v-model="form.userPhone" ></el-input>
+      </el-form-item>
+      <el-form-item label="用户账户积分" prop="account">
+        <el-input disabled v-model="form.account" ></el-input>
       </el-form-item>
     </el-form>
 
@@ -88,14 +95,21 @@ export default {
     },
     selBook(){
       const book = this.books.find(v => v.bookNo === this.form.bookNo)
-      this.form.bookName = book.name
-      this.form.score = book.score
+      request.get('/book/'+ book.id).then(res => {
+        //强制设置属性对象
+        this.$set(this.form,'bookName',res.data.name)
+        this.form.score = res.data.score
+        this.form.nums = res.data.nums
+      })
     },
     selUser(){
-      const user = this.users.find(v => v.username === this.form.userNo); // 修正变量名错误
-        this.form.userName = user.name; // 更新用户名称字段
-        this.form.userPhone = user.phone; // 更新用户联系方式字段
-    },
+      const user = this.users.find(v => v.username === this.form.userNo)
+      request.get('/user/'+ user.id).then(res => {
+        this.$set(this.form,'userName',res.data.name)
+        this.form.userPhone = res.data.phone
+        this.form.account = res.data.account
+      })
+    }
   }
 }
 

@@ -36,6 +36,11 @@ public class UserController {
         userService.save(user);
         return Result.success();
     }
+    @PostMapping("/account")
+    public Result account(@RequestBody User user){
+        userService.handleAccount(user);
+        return Result.success();
+    }
 
     @GetMapping("/list")
     public Result list(){

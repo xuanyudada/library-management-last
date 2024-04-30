@@ -48,7 +48,7 @@ export default {
       callback()
     };
     return {
-      form: {sex: '男'},
+      form: {sex: '男',account:'0'},
       rules: {
         name: [
           {required: true, message: '请输入姓名', trigger: 'blur'},

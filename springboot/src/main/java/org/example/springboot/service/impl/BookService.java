@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.springboot.controller.request.BaseRequest;
 import org.example.springboot.entity.Book;
 import org.example.springboot.entity.Category;
+import org.example.springboot.exeption.ServiceException;
 import org.example.springboot.mapper.BookMapper;
 import org.example.springboot.service.IBookService;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,13 @@ public class BookService implements IBookService {
 
     @Override
     public void save(Book obj) {
-        obj.setCategory(category(obj.getCategories()));
-        bookMapper.save(obj);
+        try {
+            obj.setCategory(category(obj.getCategories()));
+            bookMapper.save(obj);
+        }catch (Exception e){
+            throw new ServiceException("数据插入错误",e);
+        }
+
     }
 
     @Override
@@ -46,9 +52,14 @@ public class BookService implements IBookService {
 
     @Override
     public void update(Book obj) {
-        obj.setCategory(category(obj.getCategories()));
-        obj.setUpdatetime(LocalDate.now());
-        bookMapper.updateById(obj);
+        try {
+            obj.setCategory(category(obj.getCategories()));
+            obj.setUpdatetime(LocalDate.now());
+            bookMapper.updateById(obj);
+        }catch (Exception e){
+            throw new ServiceException("数据更新错误",e);
+        }
+
     }
 
     @Override

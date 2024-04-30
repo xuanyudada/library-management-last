@@ -5,20 +5,34 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.example.springboot.controller.request.BaseRequest;
+import org.example.springboot.entity.Book;
 import org.example.springboot.entity.Borrow;
+import org.example.springboot.entity.User;
+import org.example.springboot.exeption.ServiceException;
+import org.example.springboot.mapper.BookMapper;
 import org.example.springboot.mapper.BorrowMapper;
+import org.example.springboot.mapper.UserMapper;
 import org.example.springboot.service.IBorrowService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
 public class BorrowService implements IBorrowService {
     @Resource
     BorrowMapper borrowMapper;
+
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    BookMapper bookMapper;
 
     @Override
     public List<Borrow> list() {
@@ -32,7 +46,37 @@ public class BorrowService implements IBorrowService {
     }
 
     @Override
+    @Transactional
     public void save(Borrow obj) {
+        //1.校验用户积分是否足够
+        String userNo = obj.getUserNo();
+        User user = userMapper.getByUsername(userNo);
+        if (Objects.isNull(user)) {
+            throw new  ServiceException("用户不存在");
+        }
+        //2.校验图书的数量是否足够
+        Book book = bookMapper.getByNo(obj.getBookNo());
+        if (Objects.isNull(book)) {
+            throw new  ServiceException("所借图书不存在");
+        }
+        Integer account = user.getAccount();
+        Integer score = book.getScore();
+        //3.校验用户账户余额
+        if (score > account){
+            throw new ServiceException("用户积分不足");
+        }
+        //4.校验图书数量
+        if (book.getNums() <1) {
+            throw new ServiceException("图书数量不足");
+        }
+        //5.更新余额
+        user.setAccount(user.getAccount() - score);
+        userMapper.updateById(user);
+        //6.更新图书的数量
+        book.setNums(book.getNums()-1);
+        bookMapper.updateById(book);
+
+        //7.新增借书记录
         borrowMapper.save(obj);
     }
 
@@ -43,6 +87,7 @@ public class BorrowService implements IBorrowService {
 
     @Override
     public void update(Borrow obj) {
+
         obj.setUpdatetime(LocalDate.now());
         borrowMapper.updateById(obj);
     }

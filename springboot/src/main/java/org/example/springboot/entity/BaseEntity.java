@@ -12,7 +12,7 @@ public class BaseEntity implements Serializable {
     private Integer id;
 
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
-    private LocalDate cteatetime;
+    private LocalDate createtime;
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     private LocalDate updatetime;
 }

@@ -10,19 +10,20 @@
     <el-table :data="tableData" stripe  row-key="id" default-expand-all>
       <el-table-column prop="id" label="编号" width="80"></el-table-column>
       <el-table-column prop="name" label="图书名称" width="80"></el-table-column>
+      <el-table-column prop="bookNo" label="标准码"></el-table-column>
       <el-table-column prop="description" label="描述" width="80"></el-table-column>
       <el-table-column prop="publishDate" with="200" label="发布日期" width="80"></el-table-column>
       <el-table-column prop="author" label="作者" width="80"></el-table-column>
       <el-table-column prop="publisher" label="出版社"></el-table-column>
       <el-table-column prop="category" label="分类"></el-table-column>
-      <el-table-column prop="bookNo" label="标准码"></el-table-column>
       <el-table-column prop="score" label="借书积分"></el-table-column>
+      <el-table-column prop="nums" label="数量"></el-table-column>
       <el-table-column prop="cover" label="封面">
         <template v-slot="scope">
           <el-image :src="scope.row.cover" :preview-src-list="[scope.row.cover]" ></el-image>
         </template>
       </el-table-column>
-      <el-table-column prop="cteatetime" label="创建时间"></el-table-column>
+      <el-table-column prop="createtime" label="创建时间"></el-table-column>
       <el-table-column prop="updatetime" label="更新时间"></el-table-column>
       <el-table-column label="操作" width="140">
         <template v-slot="scope">

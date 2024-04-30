@@ -17,11 +17,10 @@
       <el-table-column prop="userName" label="用户名称" width="80"></el-table-column>
       <el-table-column prop="userPhone" label="用户联系方式"></el-table-column>
       <el-table-column prop="score" label="所用积分"></el-table-column>
-      <el-table-column prop="cteatetime" label="创建时间"></el-table-column>
-      <el-table-column prop="updatetime" label="更新时间"></el-table-column>
-      <el-table-column label="操作" width="280">
+      <el-table-column prop="createtime" label="创建时间"></el-table-column>
+      <el-table-column label="操作">
         <template v-slot="scope">
-          <el-button type="primary" @click="$router.push('/EditBorrow?id=' + scope.row.id)">编辑</el-button>
+<!--          <el-button type="primary" @click="$router.push('/EditBorrow?id=' + scope.row.id)">编辑</el-button>-->
           <el-popconfirm
               style="margin-left: 5px"
               title="确定删除这行数据吗？"
