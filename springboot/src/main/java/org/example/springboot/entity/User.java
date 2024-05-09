@@ -21,4 +21,5 @@ public class User {
     private Date createtime;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatetime;
+    private boolean status;
 }

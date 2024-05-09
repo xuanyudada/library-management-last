@@ -70,6 +70,9 @@ const routes = [
             {path: 'borrowList',name: 'BorrowList',component: () => import('@/views/borrow/List.vue'),},
             {path: 'addBorrow',name: 'AddBorrow',component: () => import('@/views/borrow/Add.vue'),},
             {path: 'editBorrow',name: 'EditBorrow',component: () => import('@/views/borrow/Edit.vue'),},
+            // ===Return ===
+            {path: 'returList',name: 'returList',component: () => import('@/views/retur/List.vue'),},
+
         ]
     },
     {

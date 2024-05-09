@@ -1,6 +1,7 @@
 package org.example.springboot.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.example.springboot.controller.request.BaseRequest;
 import org.example.springboot.entity.User;
 
@@ -22,4 +23,5 @@ public interface UserMapper {
     void deleteById(Integer id);
 
     User getByUsername(String username);
+
 }

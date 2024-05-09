@@ -18,6 +18,7 @@
       <div style="margin:30px;text-align: center;font-size: 30px;color: dodgerblue">登录</div>
       <el-form :model="admin" :rules="rules" ref="loginForm">
         <el-form-item>
+      <!--   用element后要用@keyup.enter.native  -->
           <el-input placeholder="请输入账号" prefix-icon="el-icon-user" size="medium" v-model="admin.username" @keyup.enter.native="login"></el-input>
         </el-form-item>
         <el-form-item>

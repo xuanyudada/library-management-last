@@ -45,7 +45,7 @@
     </el-form>
 
     <div style="text-align: center;margin-top: 30px">
-      <el-button type="primary" @click="save" size="medium">提交</el-button>
+      <el-button type="primary" @keyup.enter.native="save" @click="save" size="medium">提交</el-button>
     </div>
   </div>
 </template>

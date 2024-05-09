@@ -3,6 +3,7 @@ package org.example.springboot.controller;
 import org.example.springboot.common.Result;
 import org.example.springboot.controller.request.BorrowPageRequest;
 import org.example.springboot.entity.Borrow;
+import org.example.springboot.entity.Retur;
 import org.example.springboot.service.IBorrowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -49,8 +50,24 @@ public class BorrowController {
         return Result.success(list);
     }
 
+    @GetMapping("/pageRetur")
+    public Result pageRetur(BorrowPageRequest pageRequest) {
+        return Result.success(borrowService.pageRetur(pageRequest));
+    }
+
     @GetMapping("/page")
     public Result page(BorrowPageRequest pageRequest) {
         return Result.success(borrowService.page(pageRequest));
+    }
+
+    @PostMapping("/saveRetur")
+    public Result saveRetur(@RequestBody Retur obj) {
+        borrowService.saveRetur(obj);
+        return Result.success();
+    }
+    @DeleteMapping("deleterRetur/{id}")
+    public Result deleterRetur(@PathVariable Integer id) {
+        borrowService.deleterReturById(id);
+        return Result.success();
     }
 }
