@@ -6,6 +6,7 @@
                     :w="310"
                     :h="155"
                     :accuracy="5"
+                    :imgs="[require('@/assets/1.png')]"
                     slider-text="向右滑动"
                     @success="onSuccess"
                     @fail="onFail"

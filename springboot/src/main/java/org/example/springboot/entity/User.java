@@ -22,4 +22,5 @@ public class User {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private Date updatetime;
     private boolean status;
+    private String password;
 }
